@@ -6,6 +6,8 @@ cursor.execute("CREATE TABLE IF NOT EXISTS accounts(url TEXT, login TEXT, passwo
 cursor.execute("CREATE TABLE IF NOT EXISTS usr_log(login TEXT, password TEXT)")
 conn.commit()
 
+
+"""##test_features
 def create_passle_id(code):
     try:
         len(cursor.execute("SELECT login FROM usr_log ").fetchone()[0])
@@ -34,26 +36,48 @@ def sign_in(login, password):
             return False
     else:
         return False
+"""
+#production
+
 
 def make_account(url,password,login):
+    """
+    Создание зиписи пароля, логина, ссылки
+    """
     cursor.execute("INSERT INTO accounts VALUES (?,?,?)", (url, login, password),)
     conn.commit()
 
 def get_logins():
+    """
+    Получение списка логинов
+    """
     logins = cursor.execute("SELECT login FROM accounts")
     logins=logins.fetchall()
     return logins
 
 def get_pass(login):
+    """
+    Получение пароля пользователя по логину
+    """
     try:
         password = cursor.execute("SELECT password FROM accounts WHERE login=(?)", (login,))
         print(f'Пароль от учётной записи {login}>>> {password.fetchone()[0]}')
     except:
         print('Ошибка')
 
-def delete_data(url,login,password):
-    cursor.execute("DELETE FROM accounts WHERE url = ?",(url,))
-    conn.commit()
+def delete_data(login):
+    """
+    Удаление данных об учётной записи по логину
+    """
+    if login == False:
+        print("Отсутствуют учётные записи!\n")
+
+    else:
+        url = cursor.execute("SELECT url FROM accounts WHERE login = ?", (login,)).fetchone()[0]
+        cursor.execute("DELETE FROM accounts WHERE url = ?",(url,))
+        conn.commit()
+        print("Успешно!\n")
 
 def close():
+    
     conn.close()
