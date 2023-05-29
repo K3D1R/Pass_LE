@@ -40,6 +40,33 @@ def sign_in(login, password):
 #production
 
 
+
+def regist(data):
+    if type(data) is list:
+        if data[2] == 0:
+            login = data[0]
+            password = data[1]
+            cursor.execute('INSERT INTO usr_log VALUES (?,?)', (login, password),)
+            conn.commit()
+        if data[2] == 1:
+            t_pass = cursor.execute('SELECT password FROM usr_log').fetchone()[0]
+            t_log = cursor.execute('SELECT login FROM usr_log').fetchone()[0]
+            password = data[1]
+            login = data[0]
+            if t_pass == password and t_log == login:
+                return True
+            else:
+                return False
+    else:
+        raise TypeError
+   
+
+def get_usr_logs():
+    login = cursor.execute("SELECT login FROM usr_log")
+    login = login.fetchall()
+    login = len(login)
+    return login
+
 def make_account(url,password,login):
     """
     Создание зиписи пароля, логина, ссылки
@@ -60,8 +87,9 @@ def get_pass(login):
     Получение пароля пользователя по логину
     """
     try:
-        password = cursor.execute("SELECT password FROM accounts WHERE login=(?)", (login,))
-        print(f'Пароль от учётной записи {login}>>> {password.fetchone()[0]}')
+        password = cursor.execute("SELECT password FROM accounts WHERE login=(?)", (login,)).fetchone()[0]
+        url = cursor.execute("SELECT url FROM accounts WHERE login=(?)", (login,)).fetchone()[0]
+        print(f'Пароль от учётной записи {login}>>> {password}\nСсылка на сайт уч. записи>>> {url}')
     except:
         print('Ошибка')
 
@@ -79,5 +107,4 @@ def delete_data(login):
         print("Успешно!\n")
 
 def close():
-    
     conn.close()
