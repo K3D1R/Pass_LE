@@ -1,4 +1,4 @@
-# PASSlE
+# Pass_LE
 So, it use these packages:
 > art
 > getpass
