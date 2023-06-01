@@ -1,6 +1,4 @@
 # PASSlE
-My project for school
-
 So, it use these packages:
 > art
 > getpass
